@@ -1,0 +1,164 @@
+// -*- mode: jsonc -*-
+// Waybar for niri — Tokyo Night, top bar, per-monitor.
+// Docs: https://github.com/Alexays/Waybar/wiki
+{
+    "layer": "top",
+    "position": "top",
+    // Height auto-sizes to module content (fixed 34 was below the 44px minimum).
+    "spacing": 6,
+    // With all-outputs=false in niri/workspaces and separate-outputs=true in
+    // niri/window, this single bar definition renders correctly per-monitor.
+
+    "modules-left": [
+        "niri/workspaces",
+        "niri/window"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "mpris",
+        "idle_inhibitor",
+        "pulseaudio",
+        "network",
+        "custom/gpu",
+        "cpu",
+        "memory",
+        "temperature",
+        "niri/language",
+        "tray",
+        "custom/power"
+    ],
+
+    "niri/workspaces": {
+        "all-outputs": false,
+        "format": "{icon}",
+        "format-icons": {
+            "active": "",
+            "default": ""
+        }
+    },
+
+    "niri/window": {
+        "format": "{title}",
+        "separate-outputs": true,
+        "max-length": 90,
+        "rewrite": {
+            "": "  Desktop"
+        }
+    },
+
+    "niri/language": {
+        // {short} = xkb code (us/ru). format-<lang> overrides trigger a waybar
+        // error with niri, so they are intentionally omitted.
+        "format": "  {short}",
+        "tooltip-format": "{long}"
+    },
+
+    "clock": {
+        "interval": 1,
+        "format": "  {:%H:%M:%S}",
+        "format-alt": "  {:%a %d %b %Y}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "on-scroll": 1,
+            "format": {
+                "months": "<span color='#bb9af7'><b>{}</b></span>",
+                "days": "<span color='#c0caf5'>{}</span>",
+                "weekdays": "<span color='#7aa2f7'><b>{}</b></span>",
+                "today": "<span color='#f7768e'><b>{}</b></span>"
+            }
+        }
+    },
+
+    "cpu": {
+        "interval": 2,
+        "format": "  {usage}%",
+        "tooltip": false,
+        "on-click": "kitty -e btop"
+    },
+
+    "memory": {
+        "interval": 3,
+        "format": "  {percentage}%",
+        "tooltip-format": "RAM: {used:0.1f} / {total:0.1f} GiB",
+        "on-click": "kitty -e btop"
+    },
+
+    "temperature": {
+        // Stable path across reboots (hwmonN index is not stable).
+        "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+        "input-filename": "temp1_input",
+        "critical-threshold": 85,
+        "interval": 2,
+        "format": "{icon} {temperatureC}°C",
+        "format-critical": "{icon} {temperatureC}°C",
+        "format-icons": ["", "", "", "", ""],
+        "tooltip": false
+    },
+
+    "custom/gpu": {
+        "exec": "$HOME/.config/waybar/scripts/gpu.sh",
+        "return-type": "json",
+        "interval": 3,
+        "format": "󰢮 {}",
+        "on-click": "kitty -e nvtop"
+    },
+
+    "network": {
+        "interval": 3,
+        "format-ethernet": "  {bandwidthDownBits}",
+        "format-wifi": "  {essid} {signalStrength}%",
+        "format-disconnected": "󰤭  Off",
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}\n {bandwidthDownBits}   {bandwidthUpBits}",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "nm-connection-editor"
+    },
+
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "󰝟  muted",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "default": ["", "", ""]
+        },
+        "scroll-step": 5,
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        },
+        "tooltip-format-activated": "Idle inhibited (screen won't sleep)",
+        "tooltip-format-deactivated": "Idle inhibitor off"
+    },
+
+    "mpris": {
+        // Событийный MPRIS через libplayerctl + playerctld (авто-детект активного
+        // плеера). Встроенные клики: ЛКМ play-pause, СКМ prev, ПКМ next.
+        "format": "  {title} — {artist}",
+        "format-paused": "  {title} — {artist}",
+        "format-stopped": "",
+        "max-length": 45,
+        "tooltip-format": "{player}: {title} — {artist} ({status})"
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 10
+    },
+
+    "custom/power": {
+        "format": "⏻",
+        "tooltip": false,
+        "on-click": "wlogout"
+    }
+}

@@ -1,0 +1,34 @@
+# Deny-all + allowlist: nothing is tracked unless explicitly un-ignored below.
+# This guarantees new app dirs (browser profiles, IDE tokens, caches) never get
+# committed by accident. To track a new config: add a `!/name/` line here.
+
+/*
+!/.gitignore
+
+# --- WM / desktop configs (Wayland / niri setup) ---
+!/niri/
+!/nirimod/
+!/waypaper/
+!/waybar/
+!/kitty/
+!/alacritty/
+!/mako/
+!/wofi/
+!/swaylock/
+!/wlogout/
+!/btop/
+!/nwg-displays/
+
+# --- single-file configs ---
+!/starship.toml
+!/mimeapps.list
+!/pavucontrol.ini
+!/user-dirs.dirs
+!/user-dirs.locale
+
+# --- guards inside tracked dirs: generated/runtime junk we don't want ---
+# nirimod keeps timestamped config snapshots; git is the history now, so skip them.
+/nirimod/backups/
+
+# waypaper writes a stable lock-screen symlink target via post_command; the
+# runtime state lives in ~/.cache, not here, so nothing extra to ignore for it.

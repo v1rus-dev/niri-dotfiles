@@ -1,0 +1,36 @@
+# mako — Tokyo Night
+# Valid urgency values are low/normal/critical (NOT "high" — that is a stale
+# example in the wiki). Docs: man 5 mako
+
+sort=-time
+layer=overlay
+anchor=top-right
+max-visible=5
+
+font=JetBrainsMono Nerd Font 11
+width=360
+height=120
+margin=12
+padding=14
+border-size=2
+border-radius=10
+default-timeout=6000
+icons=1
+max-icon-size=48
+icon-border-radius=8
+
+background-color=#1a1b26f2
+text-color=#c0caf5
+border-color=#7aa2f7
+progress-color=over #292e42
+
+[urgency=low]
+border-color=#414868
+default-timeout=4000
+
+[urgency=normal]
+border-color=#7aa2f7
+
+[urgency=critical]
+border-color=#f7768e
+default-timeout=0

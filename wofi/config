@@ -1,0 +1,12 @@
+# wofi — behaviour/appearance (mode is passed on the command line: --show drun / --dmenu)
+width=620
+height=440
+location=center
+prompt=Search
+allow_images=true
+image_size=28
+insensitive=true
+hide_scroll=true
+no_actions=true
+gtk_dark=true
+key_expand=Tab

@@ -1,0 +1,129 @@
+/* Waybar — Tokyo Night, floating islands
+ * Semi-transparent pills so niri's layer blur reads through as frosted glass.
+ * Palette: bg #1a1b26  surface #414868  hl #292e42  fg #c0caf5  comment #565f89
+ *   blue #7aa2f7  cyan #7dcfff  purple #bb9af7  green #9ece6a
+ *   yellow #e0af68  orange #ff9e64  red #f7768e
+ */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font Mono", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+    color: #c0caf5;
+}
+
+/* Each module is its own floating island. */
+#workspaces,
+#window,
+#clock,
+#mpris,
+#idle_inhibitor,
+#pulseaudio,
+#network,
+#custom-gpu,
+#cpu,
+#memory,
+#temperature,
+#language,
+#tray,
+#custom-power {
+    background: rgba(26, 27, 38, 0.55);
+    padding: 0 12px;
+    margin: 6px 3px;
+    border-radius: 12px;
+    border: 1px solid rgba(41, 46, 66, 0.6);
+}
+
+#workspaces { margin-left: 8px; }
+#custom-power { margin-right: 8px; }
+
+/* Workspaces */
+#workspaces {
+    padding: 0 4px;
+}
+
+#workspaces button {
+    color: #565f89;
+    padding: 0 8px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    background: rgba(41, 46, 66, 0.8);
+    color: #c0caf5;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#workspaces button.active {
+    color: #1a1b26;
+    background: #7aa2f7;
+}
+
+#workspaces button.urgent {
+    color: #1a1b26;
+    background: #f7768e;
+}
+
+/* Window title */
+#window {
+    color: #a9b1d6;
+}
+
+window#waybar.empty #window {
+    background: transparent;
+    border-color: transparent;
+}
+
+/* Clock (center) */
+#clock {
+    color: #7dcfff;
+}
+
+/* Right-side accents */
+#mpris          { color: #9ece6a; }
+#idle_inhibitor { color: #e0af68; }
+#pulseaudio     { color: #bb9af7; }
+#network        { color: #7dcfff; }
+#custom-gpu     { color: #9ece6a; }
+#cpu            { color: #7aa2f7; }
+#memory         { color: #bb9af7; }
+#temperature    { color: #e0af68; }
+#language       { color: #ff9e64; }
+
+#pulseaudio.muted         { color: #565f89; }
+#temperature.critical     { color: #f7768e; }
+#idle_inhibitor.activated { color: #9ece6a; }
+#network.disconnected     { color: #f7768e; }
+
+#tray > .passive { -gtk-icon-effect: dim; }
+#tray > .needs-attention { -gtk-icon-effect: highlight; }
+
+#custom-power {
+    color: #f7768e;
+    font-size: 15px;
+    padding: 0 14px;
+}
+
+#custom-power:hover {
+    background: #f7768e;
+    color: #1a1b26;
+}
+
+tooltip {
+    background: #16161e;
+    border: 1px solid #7aa2f7;
+    border-radius: 8px;
+}
+
+tooltip label {
+    color: #c0caf5;
+}

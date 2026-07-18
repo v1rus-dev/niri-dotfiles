@@ -1,0 +1,57 @@
+# swaylock-effects — Tokyo Night
+# Effects options (screenshots/effect-*/clock/fade-in) require the
+# swaylock-effects fork (AUR: swaylock-effects). Plain swaylock ignores/errors.
+# Docs: https://github.com/mortie/swaylock-effects
+
+# --- Behaviour ---
+ignore-empty-password
+show-failed-attempts
+indicator-caps-lock
+font=JetBrainsMono Nerd Font
+
+# --- Effects ---
+# Background is provided by lock.sh: -i <wallpaper>, or --screenshots as fallback.
+# Blur cheaply: downscale -> blur small image -> upscale.
+# Order matters (effects apply top-to-bottom). Cuts blur cost ~6x on 2x1440p.
+effect-scale=0.4
+effect-blur=6x4
+effect-scale=2.5
+effect-vignette=0.2:0.5
+clock
+timestr=%H:%M:%S
+datestr=%A, %d %B
+indicator
+indicator-radius=120
+indicator-thickness=10
+# grace=2   # uncomment to allow a 2s no-password dismiss window after locking
+
+# --- Colors (Tokyo Night) ---
+color=1a1b26
+bs-hl-color=f7768e
+caps-lock-bs-hl-color=f7768e
+caps-lock-key-hl-color=9ece6a
+inside-color=1a1b26
+inside-clear-color=1a1b26
+inside-caps-lock-color=1a1b26
+inside-ver-color=1a1b26
+inside-wrong-color=1a1b26
+key-hl-color=9ece6a
+layout-bg-color=00000000
+layout-border-color=00000000
+layout-text-color=c0caf5
+line-color=00000000
+line-clear-color=00000000
+line-caps-lock-color=00000000
+line-ver-color=00000000
+line-wrong-color=00000000
+ring-color=414868
+ring-clear-color=e0af68
+ring-caps-lock-color=ff9e64
+ring-ver-color=7aa2f7
+ring-wrong-color=f7768e
+separator-color=00000000
+text-color=c0caf5
+text-clear-color=e0af68
+text-caps-lock-color=ff9e64
+text-ver-color=7aa2f7
+text-wrong-color=f7768e
