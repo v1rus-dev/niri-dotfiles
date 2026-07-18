@@ -1,129 +1,214 @@
-/* Waybar — Tokyo Night, floating islands
- * Semi-transparent pills so niri's layer blur reads through as frosted glass.
- * Palette: bg #1a1b26  surface #414868  hl #292e42  fg #c0caf5  comment #565f89
- *   blue #7aa2f7  cyan #7dcfff  purple #bb9af7  green #9ece6a
- *   yellow #e0af68  orange #ff9e64  red #f7768e
- */
+/* ============================================================
+   Floating islands — палитра Tokyo Night Moon
+   (в тон GTK-теме Tokyonight-BL-MB-Dark-Moon)
+   ------------------------------------------------------------
+   bg #222436  bg_dark #1e2030  bg_highlight #2f334d
+   fg #c8d3f5  fg_dark #828bb8  comment #636da6
+   blue #82aaff  cyan #86e1fc  teal #4fd6be  green #c3e88d
+   magenta #c099ff  yellow #ffc777  red #ff757f
+   ============================================================ */
 
 * {
-    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font Mono", sans-serif;
-    font-size: 14px;
-    font-weight: 600;
+    font-family:
+        "JetBrainsMono Nerd Font", "Font Awesome 6 Free", Roboto, Helvetica,
+        Arial, sans-serif;
+    font-size: 13px;
     min-height: 0;
 }
 
 window#waybar {
     background: transparent;
-    color: #c0caf5;
+    color: #c8d3f5;
 }
 
-/* Each module is its own floating island. */
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+button {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* ---- Floating islands ---- */
+#custom-launcher,
 #workspaces,
 #window,
-#clock,
 #mpris,
-#idle_inhibitor,
-#pulseaudio,
-#network,
-#custom-gpu,
-#cpu,
-#memory,
-#temperature,
-#language,
-#tray,
+#status,
+#clock,
 #custom-power {
-    background: rgba(26, 27, 38, 0.55);
-    padding: 0 12px;
-    margin: 6px 3px;
-    border-radius: 12px;
-    border: 1px solid rgba(41, 46, 66, 0.6);
-}
-
-#workspaces { margin-left: 8px; }
-#custom-power { margin-right: 8px; }
-
-/* Workspaces */
-#workspaces {
+    background-color: rgba(30, 32, 48, 0.92); /* bg_dark #1e2030 */
+    border: 1px solid rgba(130, 170, 255, 0.12); /* subtle blue edge */
+    border-radius: 11px;
+    margin: 0 5px;
     padding: 0 4px;
 }
 
+.modules-left > widget:first-child > #custom-launcher {
+    margin-left: 2px;
+}
+.modules-right > widget:last-child > #custom-power {
+    margin-right: 2px;
+}
+
+/* ---- Launcher / Power buttons ---- */
+#custom-launcher {
+    color: #82aaff; /* blue */
+    font-size: 15px;
+    padding: 0 13px;
+}
+
+#custom-power {
+    background-color: #db4b4b; /* always red (Tokyo Night error red) */
+    border-color: rgba(219, 75, 75, 0.6);
+    color: #ffffff; /* white icon */
+    font-size: 14px;
+    padding: 0 13px;
+}
+
+#custom-launcher:hover {
+    background-color: rgba(130, 170, 255, 0.14);
+}
+#custom-power:hover {
+    background-color: #c53030; /* slightly deeper red */
+}
+
+/* ---- Workspaces (Nerd Font circles: filled = active, outline = others) ---- */
 #workspaces button {
-    color: #565f89;
-    padding: 0 8px;
-    margin: 4px 2px;
-    border-radius: 8px;
+    padding: 0 6px;
+    margin: 3px 1px;
+    font-size: 10px; /* smaller so the dots read as neat markers */
+    color: #636da6; /* comment — dimmed inactive (outline circle) */
+    border-radius: 7px;
     background: transparent;
-    transition: all 0.2s ease;
 }
 
 #workspaces button:hover {
-    background: rgba(41, 46, 66, 0.8);
-    color: #c0caf5;
-    box-shadow: none;
+    color: #c8d3f5;
     text-shadow: none;
 }
 
 #workspaces button.active {
-    color: #1a1b26;
-    background: #7aa2f7;
+    color: #82aaff; /* blue accent — filled circle */
 }
 
 #workspaces button.urgent {
-    color: #1a1b26;
-    background: #f7768e;
+    color: #ff757f; /* red — filled circle */
 }
 
-/* Window title */
+/* ---- Active window title (island) ---- */
 #window {
-    color: #a9b1d6;
+    color: #828bb8; /* fg_dark — muted */
+    padding: 0 12px;
+    font-style: italic;
+    opacity: 1;
+    /* only opacity — animating padding would slide the text on appear (jitter) */
+    transition: opacity 0.25s ease;
 }
-
+/* collapse + fade out the island entirely when no active window.
+   waybar adds the `empty` class to the root window#waybar, not to #window */
 window#waybar.empty #window {
+    padding: 0;
+    margin: 0;
+    border: none;
     background: transparent;
-    border-color: transparent;
+    box-shadow: none;
+    opacity: 0;
 }
 
-/* Clock (center) */
+/* ---- Media / mpris island (center) ---- */
+#mpris {
+    color: #c3e88d; /* green */
+    padding: 0 12px;
+}
+
+/* ---- Clock island ---- */
 #clock {
-    color: #7dcfff;
-}
-
-/* Right-side accents */
-#mpris          { color: #9ece6a; }
-#idle_inhibitor { color: #e0af68; }
-#pulseaudio     { color: #bb9af7; }
-#network        { color: #7dcfff; }
-#custom-gpu     { color: #9ece6a; }
-#cpu            { color: #7aa2f7; }
-#memory         { color: #bb9af7; }
-#temperature    { color: #e0af68; }
-#language       { color: #ff9e64; }
-
-#pulseaudio.muted         { color: #565f89; }
-#temperature.critical     { color: #f7768e; }
-#idle_inhibitor.activated { color: #9ece6a; }
-#network.disconnected     { color: #f7768e; }
-
-#tray > .passive { -gtk-icon-effect: dim; }
-#tray > .needs-attention { -gtk-icon-effect: highlight; }
-
-#custom-power {
-    color: #f7768e;
-    font-size: 15px;
     padding: 0 14px;
+    color: #c8d3f5;
 }
 
-#custom-power:hover {
-    background: #f7768e;
-    color: #1a1b26;
+/* ---- Status group: shared island, per-module accents ---- */
+#cpu,
+#memory,
+#temperature,
+#bluetooth,
+#pulseaudio,
+#network,
+#language,
+#idle_inhibitor,
+#tray,
+#custom-notification {
+    background: transparent;
+    padding: 0 9px;
+    color: #c8d3f5;
 }
 
-tooltip {
-    background: #16161e;
-    border: 1px solid #7aa2f7;
-    border-radius: 8px;
+#cpu {
+    color: #c3e88d;
+} /* green */
+#memory {
+    color: #c099ff;
+} /* magenta */
+#temperature {
+    color: #ffc777;
+} /* yellow */
+#bluetooth {
+    color: #82aaff;
+} /* blue */
+#pulseaudio {
+    color: #86e1fc;
+} /* cyan */
+#network {
+    color: #4fd6be;
+} /* teal */
+#language {
+    color: #ffc777;
+} /* yellow */
+
+#temperature.critical {
+    color: #ff757f;
+} /* red */
+#network.disconnected {
+    color: #ff757f;
+}
+#pulseaudio.muted {
+    color: #636da6;
+}
+#idle_inhibitor.activated {
+    color: #ffc777;
+} /* awake — yellow */
+
+/* Notification states (swaync) */
+#custom-notification.notification,
+#custom-notification.inhibited-notification {
+    color: #ff757f; /* есть непрочитанные — красный */
+}
+#custom-notification.dnd-notification,
+#custom-notification.dnd-none,
+#custom-notification.dnd-inhibited-notification,
+#custom-notification.dnd-inhibited-none {
+    color: #636da6; /* не беспокоить — приглушённый */
 }
 
-tooltip label {
-    color: #c0caf5;
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+/* Tray drawer: «ведущий» значок-стрелка, трей выезжает по наведению */
+#custom-tray-toggle {
+    color: #828bb8;
+    padding: 0 9px;
+}
+#custom-tray-toggle:hover {
+    color: #c8d3f5;
+}
+/* иконки трея, спрятанные в drawer */
+#tray.tray-item {
+    padding-left: 4px;
 }

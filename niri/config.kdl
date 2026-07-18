@@ -75,7 +75,7 @@ output "DP-3" {
 // https://niri-wm.github.io/niri/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 16
+    gaps 8
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -228,8 +228,9 @@ layout {
 // This line starts waybar, a commonly used bar for Wayland compositors.
 spawn-at-startup "waybar"
 
-// Notification daemon.
-spawn-at-startup "mako"
+// Notification daemon (SwayNotificationCenter — provides the Waybar
+// notification indicator via `swaync-client -swb`).
+spawn-at-startup "swaync"
 
 // PolicyKit authentication agent (GUI password prompts for privileged actions).
 // Path is provided by the mate-polkit package.
@@ -375,8 +376,8 @@ window-rule {
     opacity 1.0
 }
 
-// Blur behind the waybar bar.
-layer-rule {
+// Blur behind the waybar bar. Disabled — bar reads cleaner without frosted glass.
+/-layer-rule {
     match namespace="waybar"
     background-effect {
         blur true

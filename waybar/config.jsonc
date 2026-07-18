@@ -1,164 +1,192 @@
 // -*- mode: jsonc -*-
-// Waybar for niri — Tokyo Night, top bar, per-monitor.
+// Waybar for niri — Tokyo Night Moon, floating islands.
+// Adapted from a Hyprland config: hyprland/* -> niri/*, power -> wlogout,
+// notifications via swaync, media (mpris) added, GPU module dropped.
 // Docs: https://github.com/Alexays/Waybar/wiki
 {
-    "layer": "top",
-    "position": "top",
-    // Height auto-sizes to module content (fixed 34 was below the 44px minimum).
-    "spacing": 6,
-    // With all-outputs=false in niri/workspaces and separate-outputs=true in
-    // niri/window, this single bar definition renders correctly per-monitor.
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "spacing": 0,
+  "margin-top": 6,
+  "margin-left": 10,
+  "margin-right": 10,
 
-    "modules-left": [
-        "niri/workspaces",
-        "niri/window"
+  "modules-left": ["custom/launcher", "niri/workspaces", "niri/window"],
+  "modules-center": ["mpris"],
+  "modules-right": ["group/status", "clock", "custom/power"],
+
+  "group/status": {
+    "orientation": "horizontal",
+    "modules": [
+      "cpu",
+      "memory",
+      "temperature",
+      "bluetooth",
+      "pulseaudio",
+      "network",
+      "niri/language",
+      "idle_inhibitor",
+      "group/tray-drawer",
+      "custom/notification",
     ],
-    "modules-center": [
-        "clock"
-    ],
-    "modules-right": [
-        "mpris",
-        "idle_inhibitor",
-        "pulseaudio",
-        "network",
-        "custom/gpu",
-        "cpu",
-        "memory",
-        "temperature",
-        "niri/language",
-        "tray",
-        "custom/power"
-    ],
+  },
 
-    "niri/workspaces": {
-        "all-outputs": false,
-        "format": "{icon}",
-        "format-icons": {
-            "active": "",
-            "default": ""
-        }
+  "group/tray-drawer": {
+    "orientation": "horizontal",
+    "drawer": {
+      "transition-duration": 400,
+      "children-class": "tray-item",
+      "transition-left-to-right": false,
     },
+    "modules": ["custom/tray-toggle", "tray"],
+  },
+  "custom/tray-toggle": {
+    "format": "󰅁",
+    "tooltip": false,
+  },
 
-    "niri/window": {
-        "format": "{title}",
-        "separate-outputs": true,
-        "max-length": 90,
-        "rewrite": {
-            "": "  Desktop"
-        }
+  "custom/launcher": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "wofi --show drun",
+  },
+  "custom/power": {
+    "format": "󰐥",
+    "tooltip": false,
+    "on-click": "wlogout",
+  },
+
+  // Niri manages workspaces dynamically per-output (no fixed 1..10 like the
+  // Hyprland persistent-workspaces). {value} shows the workspace name if named,
+  // otherwise its index. Clicking a workspace activates it (module default).
+  "niri/workspaces": {
+    "all-outputs": false,
+    "format": "{icon}",
+    "format-icons": {
+      "active": "\uf111", // nf-fa-circle (filled) — current workspace
+      "urgent": "\uf111", // nf-fa-circle
+      "default": "\uf10c", // nf-fa-circle-o (outline) — other workspaces
     },
+  },
 
-    "niri/language": {
-        // {short} = xkb code (us/ru). format-<lang> overrides trigger a waybar
-        // error with niri, so they are intentionally omitted.
-        "format": "  {short}",
-        "tooltip-format": "{long}"
+  "niri/window": {
+    "format": "{title}",
+    "max-length": 60,
+    "separate-outputs": true,
+    "rewrite": {
+      "": "", // hide when no active window (island collapses via CSS .empty)
     },
+  },
 
-    "clock": {
-        "interval": 1,
-        "format": "  {:%H:%M:%S}",
-        "format-alt": "  {:%a %d %b %Y}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "calendar": {
-            "mode": "month",
-            "on-scroll": 1,
-            "format": {
-                "months": "<span color='#bb9af7'><b>{}</b></span>",
-                "days": "<span color='#c0caf5'>{}</span>",
-                "weekdays": "<span color='#7aa2f7'><b>{}</b></span>",
-                "today": "<span color='#f7768e'><b>{}</b></span>"
-            }
-        }
+  "cpu": {
+    "format": "Cpu: {usage}%",
+    "tooltip-format": "CPU: {usage}% · load {load}",
+    "interval": 5,
+    "on-click": "kitty -e btop",
+  },
+  "memory": {
+    "format": "Ram: {percentage}%",
+    "tooltip-format": "RAM: {used:0.1f}/{total:0.1f} GiB ({percentage}%)",
+    "interval": 5,
+    "on-click": "kitty -e btop",
+  },
+  "temperature": {
+    "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+    "input-filename": "temp1_input",
+    "critical-threshold": 85,
+    "format": "Temp: {temperatureC}°C",
+    "format-icons": ["", "", ""],
+    "tooltip-format": "Температура CPU: {temperatureC}°C",
+  },
+  "bluetooth": {
+    "format-on": "󰂯",
+    "format-off": "󰂲",
+    "format-disabled": "", // empty format hides the module (no adapter)
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    // blueman-manager not installed; leaving no on-click (click is a no-op).
+  },
+  "pulseaudio": {
+    "format": "󰕾 {volume}%",
+    "format-bluetooth": "󰕾 {volume}%",
+    "format-bluetooth-muted": "󰅶 {icon} {format_source}",
+    "format-muted": "󰖁 {volume}%",
+    "format-source": "{volume}% ",
+    "format-source-muted": "",
+    "format-icons": {
+      "headphone": "󰋋",
+      "hands-free": "󰋎",
+      "headset": "󰋎",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": ["󰕼", "󰕽", "󰕾"],
     },
-
-    "cpu": {
-        "interval": 2,
-        "format": "  {usage}%",
-        "tooltip": false,
-        "on-click": "kitty -e btop"
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+  },
+  "network": {
+    "interval": 2,
+    "format-wifi": "󰖩 {essid}  ↓{bandwidthDownBytes} ↑{bandwidthUpBytes}",
+    "format-ethernet": "󰈀 ↓{bandwidthDownBytes} ↑{bandwidthUpBytes}",
+    "tooltip-format": "{ifname} · {ipaddr}\n↓ {bandwidthDownBytes}  ↑ {bandwidthUpBytes}",
+    "format-linked": "{ifname} (No IP) 󰊗",
+    "format-disconnected": "󰖪 Disconnected",
+    "on-click": "nm-connection-editor",
+  },
+  // Niri xkb layout switching (replaces hyprctl switchxkblayout).
+  "niri/language": {
+    "format": "󰌌 {short}",
+    "tooltip-format": "{long}",
+    "on-click": "niri msg action switch-layout next",
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "󰈈",
+      "deactivated": "󰈉",
     },
-
-    "memory": {
-        "interval": 3,
-        "format": "  {percentage}%",
-        "tooltip-format": "RAM: {used:0.1f} / {total:0.1f} GiB",
-        "on-click": "kitty -e btop"
+  },
+  "mpris": {
+    // Event-driven MPRIS via playerctl. Built-in clicks: LMB play-pause,
+    // MMB prev, RMB next. Hidden automatically when no player is active.
+    "format": "  {title} — {artist}",
+    "format-paused": "  {title} — {artist}",
+    "format-stopped": "",
+    "max-length": 45,
+    "tooltip-format": "{player}: {title} — {artist} ({status})",
+  },
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󰂞",
+      "none": "󰂜",
+      "dnd-notification": "󰂛",
+      "dnd-none": "󰂛",
+      "inhibited-notification": "󰂞",
+      "inhibited-none": "󰂜",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰂜",
     },
-
-    "temperature": {
-        // Stable path across reboots (hwmonN index is not stable).
-        "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
-        "input-filename": "temp1_input",
-        "critical-threshold": 85,
-        "interval": 2,
-        "format": "{icon} {temperatureC}°C",
-        "format-critical": "{icon} {temperatureC}°C",
-        "format-icons": ["", "", "", "", ""],
-        "tooltip": false
-    },
-
-    "custom/gpu": {
-        "exec": "$HOME/.config/waybar/scripts/gpu.sh",
-        "return-type": "json",
-        "interval": 3,
-        "format": "󰢮 {}",
-        "on-click": "kitty -e nvtop"
-    },
-
-    "network": {
-        "interval": 3,
-        "format-ethernet": "  {bandwidthDownBits}",
-        "format-wifi": "  {essid} {signalStrength}%",
-        "format-disconnected": "󰤭  Off",
-        "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}\n {bandwidthDownBits}   {bandwidthUpBits}",
-        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
-        "tooltip-format-disconnected": "Disconnected",
-        "on-click": "nm-connection-editor"
-    },
-
-    "pulseaudio": {
-        "format": "{icon}  {volume}%",
-        "format-muted": "󰝟  muted",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "default": ["", "", ""]
-        },
-        "scroll-step": 5,
-        "on-click": "pavucontrol",
-        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-    },
-
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        },
-        "tooltip-format-activated": "Idle inhibited (screen won't sleep)",
-        "tooltip-format-deactivated": "Idle inhibitor off"
-    },
-
-    "mpris": {
-        // Событийный MPRIS через libplayerctl + playerctld (авто-детект активного
-        // плеера). Встроенные клики: ЛКМ play-pause, СКМ prev, ПКМ next.
-        "format": "  {title} — {artist}",
-        "format-paused": "  {title} — {artist}",
-        "format-stopped": "",
-        "max-length": 45,
-        "tooltip-format": "{player}: {title} — {artist} ({status})"
-    },
-
-    "tray": {
-        "icon-size": 16,
-        "spacing": 10
-    },
-
-    "custom/power": {
-        "format": "⏻",
-        "tooltip": false,
-        "on-click": "wlogout"
-    }
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true,
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+  },
+  "clock": {
+    "format": "󰥔  {:%H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    "format-alt": "{:%Y-%m-%d}",
+  },
 }
