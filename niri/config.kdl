@@ -74,6 +74,11 @@ output "DP-3" {
 // Find more information on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Layout
 layout {
+    // Transparent workspace background so the wallpaper — hoisted into the
+    // overview backdrop via the awww-daemon layer-rule (place-within-backdrop) —
+    // shows through on every workspace, not just in the overview.
+    background-color "transparent"
+
     // Set gaps around windows in logical pixels.
     gaps 8
 
@@ -418,6 +423,15 @@ layer-rule {
     background-effect {
         blur true
     }
+}
+
+// Show the wallpaper in the Overview backdrop. awww-daemon renders on the
+// background layer with no exclusive zone, so niri can hoist it into the
+// backdrop; without this the overview shows only backdrop-color behind
+// workspaces. Namespace verified via `niri msg layers`.
+layer-rule {
+    match namespace="^awww-daemon$"
+    place-within-backdrop true
 }
 
 // === Floating window rules =====================================================
