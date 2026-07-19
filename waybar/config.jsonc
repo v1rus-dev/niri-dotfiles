@@ -8,9 +8,12 @@
   "position": "top",
   "height": 30,
   "spacing": 0,
-  "margin-top": 6,
-  "margin-left": 10,
-  "margin-right": 10,
+  // Match niri `gaps 8`: island outer edge sits 8px from the screen edge.
+  // Each island carries a 5px side margin (see style.css), so the bar margin
+  // is 3px → 3 + 5 = 8. Top island margin is 0, so margin-top is the full 8.
+  "margin-top": 8,
+  "margin-left": 3,
+  "margin-right": 3,
 
   "modules-left": ["custom/launcher", "niri/workspaces", "niri/window"],
   "modules-center": ["mpris"],
