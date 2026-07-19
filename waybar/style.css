@@ -46,13 +46,6 @@ button {
     padding: 0 4px;
 }
 
-.modules-left > widget:first-child > #custom-launcher {
-    margin-left: 2px;
-}
-.modules-right > widget:last-child > #custom-power {
-    margin-right: 2px;
-}
-
 /* ---- Launcher / Power buttons ---- */
 #custom-launcher {
     color: #82aaff; /* blue */
