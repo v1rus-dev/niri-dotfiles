@@ -1,82 +1,87 @@
 add_newline = true
 
-format = """
-[](surface0)\
-$os$username\
-[](bg:peach fg:surface0)\
-$directory\
-[](fg:peach bg:green)\
-$git_branch$git_status\
-[](fg:green bg:blue)\
-$kotlin$java$nodejs$rust\
-[](fg:blue bg:surface0)\
-$cmd_duration\
-[ ](fg:surface0)\
-$line_break$character"""
-
 palette = "tokyonight"
 
-# Tokyo Night. Имена ролей сохранены (peach = оранжевый акцент директории и т.д.),
-# чтобы модули ниже не трогать; значения — из палитры Tokyo Night.
+format = """
+$os$username$directory$git_branch$git_status$nodejs$java$kotlin$rust$cmd_duration
+$character
+"""
+
 [palettes.tokyonight]
-surface0 = "#292e42"   # bg-highlight — тёмные сегменты (os/username/cmd_duration)
-peach    = "#ff9e64"   # orange — directory
-green    = "#9ece6a"   # green — git
-blue     = "#7aa2f7"   # blue — языки
-red      = "#f7768e"   # red — ошибка
-text     = "#1a1b26"   # bg — тёмный текст поверх цветных сегментов
+bg      = "#1a1b26"
+fg      = "#c0caf5"
+muted   = "#565f89"
+blue    = "#7aa2f7"
+cyan    = "#7dcfff"
+green   = "#9ece6a"
+yellow  = "#e0af68"
+purple  = "#bb9af7"
+red     = "#f7768e"
 
 [os]
 disabled = false
-style = "bg:surface0 fg:text"
+style = "bold blue"
+format = "[$symbol ]($style)"
+
 [os.symbols]
-Arch = "󰣇 "
+Arch = "󰣇"
 
 [username]
 show_always = true
-style_user = "bg:surface0 fg:text"
-format = '[ $user ]($style)'
+style_user = "bold fg"
+style_root = "bold red"
+format = "[$user ]($style)"
 
 [directory]
-style = "bg:peach fg:text"
-format = "[ $path ]($style)"
+style = "bold cyan"
 truncation_length = 3
-truncation_symbol = "…/"
+truncate_to_repo = true
+fish_style_pwd_dir_length = 1
+read_only = " "
+format = "[$path]($style)[$read_only](red) "
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Pictures" = "󰉏 "
+"Projects" = "󰲋 "
+"Code" = "󰆍 "
 
 [git_branch]
-symbol = ""
-style = "bg:green fg:text"
-format = '[ $symbol $branch ]($style)'
+symbol = "󰘬 "
+style = "bold green"
+format = "[$symbol$branch]($style) "
 
 [git_status]
-style = "bg:green fg:text"
-format = '[$all_status$ahead_behind ]($style)'
-
-[kotlin]
-symbol = ""
-style = "bg:blue fg:text"
-format = '[ $symbol $version ]($style)'
-
-[java]
-symbol = ""
-style = "bg:blue fg:text"
-format = '[ $symbol $version ]($style)'
+style = "yellow"
+format = "([$all_status$ahead_behind]($style)) "
 
 [nodejs]
-symbol = ""
-style = "bg:blue fg:text"
-format = '[ $symbol $version ]($style)'
+symbol = " "
+style = "purple"
+format = "[$symbol$version]($style) "
+
+[java]
+symbol = " "
+style = "red"
+format = "[$symbol$version]($style) "
+
+[kotlin]
+symbol = " "
+style = "blue"
+format = "[$symbol$version]($style) "
 
 [rust]
-symbol = ""
-style = "bg:blue fg:text"
-format = '[ $symbol $version ]($style)'
+symbol = "󱘗 "
+style = "yellow"
+format = "[$symbol$version]($style) "
 
 [cmd_duration]
-min_time = 500
-style = "bg:surface0 fg:text"
-format = '[ 󱦟 $duration ]($style)'
+min_time = 1500
+style = "muted"
+format = "[󱦟 $duration]($style) "
 
 [character]
-success_symbol = '[❯](bold green)'
-error_symbol = '[❯](bold red)'
+success_symbol = "[❯](bold blue)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
