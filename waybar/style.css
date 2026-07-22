@@ -127,8 +127,11 @@ button {
     color: #86e1fc;
 } /* cyan */
 #network {
-    color: #4fd6be;
-} /* teal */
+    color: #4fd6be; /* teal */
+    /* Reserve a fixed width so live ↓/↑ throughput can't resize the island.
+       Tune if the numbers ever clip or leave too much empty space. */
+    min-width: 150px;
+}
 #language {
     color: #ffc777;
 } /* yellow */

@@ -133,15 +133,16 @@
     "on-click": "pavucontrol",
     "on-click-right": "~/.config/niri/scripts/volume.sh mute",
   },
-  // Bandwidth lives only in the tooltip now: the live ↓/↑ figures changed
-  // width every 2s and resized the whole right island. The bar shows a stable
-  // string (essid on wifi, IP on ethernet); hover for live throughput.
+  // Live ↓/↑ throughput is shown on ethernet. To stop the figures from
+  // resizing the right island every 2s, #network has a fixed min-width in
+  // style.css — the numbers update in place, the layout stays put.
+  // IP is intentionally not shown anywhere (privacy).
   "network": {
     "interval": 2,
     "format-wifi": "󰖩 {essid}",
-    "format-ethernet": "󰈀 {ipaddr}",
+    "format-ethernet": "󰈀 ↓{bandwidthDownBytes} ↑{bandwidthUpBytes}",
     "max-length": 28, // safety cap for long SSIDs
-    "tooltip-format": "{ifname} · {ipaddr}\n↓ {bandwidthDownBytes}  ↑ {bandwidthUpBytes}",
+    "tooltip-format": "{ifname}\n↓ {bandwidthDownBytes}  ↑ {bandwidthUpBytes}",
     "format-linked": "{ifname} (No IP) 󰊗",
     "format-disconnected": "󰖪 Disconnected",
     "on-click": "nm-connection-editor",
