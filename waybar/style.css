@@ -136,6 +136,14 @@ button {
 #temperature.critical {
     color: #ff757f;
 } /* red */
+#cpu.warning,
+#memory.warning {
+    color: #ffc777;
+} /* amber — heavy load */
+#cpu.critical,
+#memory.critical {
+    color: #ff757f;
+} /* red — near max */
 #network.disconnected {
     color: #ff757f;
 }
