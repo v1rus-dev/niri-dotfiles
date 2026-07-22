@@ -309,12 +309,10 @@ animations {
     }
 }
 
-// Named, always-present workspaces. Declaration order = index order, so
-// "main" is workspace 1 and "studio" is workspace 2. Named workspaces persist
-// even when empty; dynamic (unnamed) workspaces still appear after them.
-// Mod+1 / Mod+2 keep working as before.
+// Named, always-present workspace. "main" is workspace 1; it persists even when
+// empty, giving Mod+1 a stable target. Dynamic (unnamed) workspaces appear after
+// it, so there is no permanently-reserved extra workspace.
 workspace "main"
-workspace "studio"
 
 // Window rules let you adjust behavior for individual windows.
 // Find more information on the wiki:
@@ -454,12 +452,6 @@ window-rule {
     match app-id="^polkit-mate-authentication-agent-1$"
     match title="Authentication Required"
     open-floating true
-}
-
-// Android Studio always opens on the "studio" workspace (2nd).
-window-rule {
-    match app-id="^jetbrains-studio$"
-    open-on-workspace "studio"
 }
 
 binds {

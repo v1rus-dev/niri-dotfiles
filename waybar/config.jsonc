@@ -15,8 +15,8 @@
   "margin-left": 3,
   "margin-right": 3,
 
-  "modules-left": ["custom/launcher", "niri/workspaces", "niri/window"],
-  "modules-center": ["mpris"],
+  "modules-left": ["custom/launcher", "niri/workspaces"],
+  "modules-center": [],
   "modules-right": ["group/status", "clock", "custom/power"],
 
   "group/status": {
@@ -70,15 +70,6 @@
       "active": "\uf111", // nf-fa-circle (filled) — current workspace
       "urgent": "\uf111", // nf-fa-circle
       "default": "\uf10c", // nf-fa-circle-o (outline) — other workspaces
-    },
-  },
-
-  "niri/window": {
-    "format": "{title}",
-    "max-length": 60,
-    "separate-outputs": true,
-    "rewrite": {
-      "": "", // hide when no active window (island collapses via CSS .empty)
     },
   },
 
@@ -153,15 +144,6 @@
       "activated": "󰈈",
       "deactivated": "󰈉",
     },
-  },
-  "mpris": {
-    // Event-driven MPRIS via playerctl. Built-in clicks: LMB play-pause,
-    // MMB prev, RMB next. Hidden automatically when no player is active.
-    "format": "  {title} — {artist}",
-    "format-paused": "  {title} — {artist}",
-    "format-stopped": "",
-    "max-length": 45,
-    "tooltip-format": "{player}: {title} — {artist} ({status})",
   },
   "custom/notification": {
     "tooltip": false,
