@@ -119,9 +119,12 @@
       "car": "",
       "default": ["󰕼", "󰕽", "󰕾"],
     },
-    "scroll-step": 5,
+    // Scroll / right-click route through volume.sh so the bar controls ALL
+    // sinks together (speakers + headphones), matching the volume keys.
+    "on-scroll-up": "~/.config/niri/scripts/volume.sh up",
+    "on-scroll-down": "~/.config/niri/scripts/volume.sh down",
     "on-click": "pavucontrol",
-    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "~/.config/niri/scripts/volume.sh mute",
   },
   "network": {
     "interval": 2,
