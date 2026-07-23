@@ -63,7 +63,7 @@ output "DP-3" {
     mode "2560x1440@144.006"
     scale 1
     position x=2560 y=0
-    // variable-refresh-rate  // раскомментируй, если хочешь FreeSync на асусе
+    variable-refresh-rate  // FreeSync на асусе
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -386,7 +386,12 @@ window-rule {
 window-rule {
     match app-id="^kitty$"
     open-floating true
-    default-column-width { proportion 0.5; }
+    // Fixed 1268px = the gap-aware half of a 2560px output: (2560 - 3*gaps)/2
+    // with gaps=8. Floating windows use RAW proportions (0.5 -> 1280), which no
+    // longer fit two-per-screen once tiled and cause viewport jitter. Pinning the
+    // pixel width makes kitty land on the exact tiling half when un-floated so two
+    // columns fit with no scroll. Tied to a 2560-wide output — revisit if resolution changes.
+    default-column-width { fixed 1268; }
     default-window-height { proportion 0.6; }
     background-effect {
         blur true
@@ -684,6 +689,12 @@ binds {
     // set-column-width "100" will make the column occupy 200 physical screen pixels.
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
+
+    // Snap the focused column to exactly half the screen. Handy after un-floating
+    // (Mod+V): floating windows keep an arbitrary pixel width in tiling, so two
+    // of them don't quite fit and the viewport jitters. 50% is gap-aware, so two
+    // such columns fit exactly with no scroll.
+    Mod+Return { set-column-width "50%"; }
 
     // Finer height adjustments when in column with other windows.
     Mod+Shift+Minus { set-window-height "-10%"; }
