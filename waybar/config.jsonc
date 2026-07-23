@@ -1,7 +1,7 @@
 // -*- mode: jsonc -*-
 // Waybar for niri — Tokyo Night Moon, floating islands.
 // Adapted from a Hyprland config: hyprland/* -> niri/*, power -> wlogout,
-// notifications via swaync, media (mpris) added, GPU module dropped.
+// notifications via swaync, GPU module dropped.
 // Docs: https://github.com/Alexays/Waybar/wiki
 {
   "layer": "top",
@@ -65,6 +65,9 @@
   // otherwise its index. Clicking a workspace activates it (module default).
   "niri/workspaces": {
     "all-outputs": false,
+    // Scroll over the workspaces island to cycle focus up/down.
+    "on-scroll-up": "niri msg action focus-workspace-up",
+    "on-scroll-down": "niri msg action focus-workspace-down",
     "format": "{icon}",
     "format-icons": {
       "active": "\uf111", // nf-fa-circle (filled) — current workspace
@@ -77,12 +80,15 @@
     "format": "Cpu: {usage}%",
     "tooltip-format": "CPU: {usage}% · load {load}",
     "interval": 5,
+    // Colour the readout amber/red past these usage thresholds (see .css).
+    "states": { "warning": 70, "critical": 90 },
     "on-click": "kitty -e btop",
   },
   "memory": {
     "format": "Ram: {percentage}%",
     "tooltip-format": "RAM: {used:0.1f}/{total:0.1f} GiB ({percentage}%)",
     "interval": 5,
+    "states": { "warning": 75, "critical": 90 },
     "on-click": "kitty -e btop",
   },
   "temperature": {
@@ -110,6 +116,7 @@
     "format-muted": "󰖁 {volume}%",
     "format-source": "{volume}% ",
     "format-source-muted": "",
+    "tooltip-format": "{desc}\n{volume}%",
     "format-icons": {
       "headphone": "󰋋",
       "hands-free": "󰋎",
@@ -126,11 +133,16 @@
     "on-click": "pavucontrol",
     "on-click-right": "~/.config/niri/scripts/volume.sh mute",
   },
+  // Live ↓/↑ throughput is shown on ethernet. To stop the figures from
+  // resizing the right island every 2s, #network has a fixed min-width in
+  // style.css — the numbers update in place, the layout stays put.
+  // IP is intentionally not shown anywhere (privacy).
   "network": {
     "interval": 2,
-    "format-wifi": "󰖩 {essid}  ↓{bandwidthDownBytes} ↑{bandwidthUpBytes}",
+    "format-wifi": "󰖩 {essid}",
     "format-ethernet": "󰈀 ↓{bandwidthDownBytes} ↑{bandwidthUpBytes}",
-    "tooltip-format": "{ifname} · {ipaddr}\n↓ {bandwidthDownBytes}  ↑ {bandwidthUpBytes}",
+    "max-length": 28, // safety cap for long SSIDs
+    "tooltip-format": "{ifname}\n↓ {bandwidthDownBytes}  ↑ {bandwidthUpBytes}",
     "format-linked": "{ifname} (No IP) 󰊗",
     "format-disconnected": "󰖪 Disconnected",
     "on-click": "nm-connection-editor",

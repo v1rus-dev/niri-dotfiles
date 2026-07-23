@@ -7,7 +7,10 @@
 // Find the full list of options on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Input
 input {
-    warp-mouse-to-focus
+    // Disabled: it warps the cursor into the focused window on every focus
+    // change, which yanks the pointer off the Waybar workspaces island and
+    // breaks scroll-to-switch-workspace after the first tick.
+    // warp-mouse-to-focus
 
     focus-follows-mouse max-scroll-amount="33%"
 
@@ -40,13 +43,6 @@ input {
         // accel-profile "flat"
         // scroll-method "no-scroll"
     }
-
-    // Uncomment this to make the mouse warp to the center of newly focused windows.
-    // warp-mouse-to-focus
-
-    // Focus windows and outputs automatically when moving the mouse into them.
-    // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
-    // focus-follows-mouse max-scroll-amount="0%"
 }
 
 // You can configure outputs by their name, which you can find
@@ -67,7 +63,7 @@ output "DP-3" {
     mode "2560x1440@144.006"
     scale 1
     position x=2560 y=0
-    // variable-refresh-rate  // раскомментируй, если хочешь FreeSync на асусе
+    variable-refresh-rate  // FreeSync на асусе
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -257,7 +253,11 @@ spawn-sh-at-startup "sleep 1 && waypaper --restore"
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
 
-hotkey-overlay
+hotkey-overlay {
+    // Don't pop the hotkey cheat-sheet on every session start.
+    // Mod+Shift+Slash still shows it on demand.
+    skip-at-startup
+}
 
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
@@ -339,7 +339,7 @@ window-rule {
 
 // Example: block out two password managers from screen capture.
 // (This example rule is commented out with a "/-" in front.)
-/-window-rule {
+window-rule {
     match app-id=r"^org\.keepassxc\.KeePassXC$"
     match app-id=r"^org\.gnome\.World\.Secrets$"
 
@@ -386,7 +386,12 @@ window-rule {
 window-rule {
     match app-id="^kitty$"
     open-floating true
-    default-column-width { proportion 0.5; }
+    // Fixed 1268px = the gap-aware half of a 2560px output: (2560 - 3*gaps)/2
+    // with gaps=8. Floating windows use RAW proportions (0.5 -> 1280), which no
+    // longer fit two-per-screen once tiled and cause viewport jitter. Pinning the
+    // pixel width makes kitty land on the exact tiling half when un-floated so two
+    // columns fit with no scroll. Tied to a 2560-wide output — revisit if resolution changes.
+    default-column-width { fixed 1268; }
     default-window-height { proportion 0.6; }
     background-effect {
         blur true
@@ -489,12 +494,6 @@ binds {
     XF86AudioStop allow-when-locked=true { spawn-sh "playerctl stop"; }
     XF86AudioPrev allow-when-locked=true { spawn-sh "playerctl previous"; }
     XF86AudioNext allow-when-locked=true { spawn-sh "playerctl next"; }
-
-    // Example brightness key mappings for brightnessctl.
-    // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
-    // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
@@ -639,8 +638,9 @@ binds {
     // Alternatively, there are commands to move just a single window:
     // Mod+Ctrl+1 { move-window-to-workspace 1; }
 
-    // Switches focus between the current and the previous workspace.
-    // Mod+Tab { focus-workspace-previous; }
+    // Switches focus between the current and the previous workspace
+    // (a workspace-level toggle, not a window switcher).
+    Mod+Tab { focus-workspace-previous; }
 
     // The following binds move the focused window in and out of a column.
     // If the window is alone, they will consume it into the nearby column to the side.
@@ -689,6 +689,12 @@ binds {
     // set-column-width "100" will make the column occupy 200 physical screen pixels.
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
+
+    // Snap the focused column to exactly half the screen. Handy after un-floating
+    // (Mod+V): floating windows keep an arbitrary pixel width in tiling, so two
+    // of them don't quite fit and the viewport jitters. 50% is gap-aware, so two
+    // such columns fit exactly with no scroll.
+    Mod+Return { set-column-width "50%"; }
 
     // Finer height adjustments when in column with other windows.
     Mod+Shift+Minus { set-window-height "-10%"; }
@@ -740,4 +746,10 @@ binds {
 
 environment {
     XDG_DATA_DIRS "/var/lib/flatpak/exports/share:/home/yegor/.local/share/flatpak/exports/share:/usr/local/share:/usr/share"
+
+    // Prefer native Wayland for Qt/GTK/Electron apps, fall back to XWayland
+    // (xwayland-satellite, managed by niri) only when Wayland is unavailable.
+    QT_QPA_PLATFORM "wayland;xcb"
+    MOZ_ENABLE_WAYLAND "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
 }
