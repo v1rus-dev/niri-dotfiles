@@ -63,7 +63,7 @@ output "DP-3" {
     mode "2560x1440@144.006"
     scale 1
     position x=2560 y=0
-    variable-refresh-rate  // FreeSync на асусе
+    // variable-refresh-rate  // FreeSync на асусе — отключён: монитор мигал
 }
 
 // Settings that influence how windows are positioned and sized.
