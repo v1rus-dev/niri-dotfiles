@@ -33,6 +33,7 @@ button {
 
 /* ---- Floating islands ---- */
 #custom-launcher,
+#window,
 #workspaces,
 #status,
 #clock,
@@ -89,6 +90,26 @@ button {
     color: #ff757f; /* red — filled circle */
 }
 
+/* ---- Active window title (собственный остров) ---- */
+#window {
+    color: #828bb8; /* fg_dark — приглушённый */
+    padding: 0 12px;
+    font-style: italic;
+    opacity: 1;
+    /* только opacity — анимация padding уводила бы текст вбок при появлении */
+    transition: opacity 0.25s ease;
+}
+/* нет активного окна → остров схлопывается целиком.
+   waybar вешает класс `empty` на window#waybar, а не на #window */
+window#waybar.empty #window {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    opacity: 0;
+}
+
 /* ---- Clock island ---- */
 #clock {
     padding: 0 14px;
@@ -96,6 +117,7 @@ button {
 }
 
 /* ---- Status group: shared island, per-module accents ---- */
+#gamemode,
 #cpu,
 #memory,
 #temperature,
@@ -111,6 +133,9 @@ button {
     color: #c8d3f5;
 }
 
+#gamemode {
+    color: #c099ff;
+} /* magenta — виден только когда GameMode запущен */
 #cpu {
     color: #c3e88d;
 } /* green */

@@ -15,13 +15,14 @@
   "margin-left": 3,
   "margin-right": 3,
 
-  "modules-left": ["custom/launcher", "niri/workspaces"],
+  "modules-left": ["custom/launcher", "niri/workspaces", "niri/window"],
   "modules-center": [],
   "modules-right": ["group/status", "clock", "custom/power"],
 
   "group/status": {
     "orientation": "horizontal",
     "modules": [
+      "gamemode",
       "cpu",
       "memory",
       "temperature",
@@ -74,6 +75,39 @@
       "urgent": "\uf111", // nf-fa-circle
       "default": "\uf10c", // nf-fa-circle-o (outline) — other workspaces
     },
+  },
+
+  // Заголовок активного окна — отдельный остров справа от Workspaces.
+  // separate-outputs: на каждом мониторе свой заголовок.
+  // max-length режет заголовок по символам (без многоточия) — полный текст
+  // остаётся в тултипе. Ограничение только здесь: в GTK3 CSS нет `max-width`,
+  // waybar на него ругается «not a valid property name».
+  // rewrite "" -> "": пустая строка, чтобы waybar выставил класс `empty` на
+  // window#waybar и остров схлопнулся через CSS (см. style.css).
+  "niri/window": {
+    "format": "{title}",
+    "max-length": 40,
+    "separate-outputs": true,
+    "tooltip-format": "{title}",
+    "rewrite": {
+      "": "",
+    },
+  },
+
+  // Feral GameMode (пакет `gamemode`, DBus com.feralinteractive.GameMode).
+  // hide-not-running: модуль полностью скрыт, пока ни одна игра не активна,
+  // поэтому в обычном состоянии остров выглядит как раньше.
+  // use-icon: false — берём Nerd Font глиф вместо иконки из темы (input-gaming
+  // есть не во всех icon-темах).
+  "gamemode": {
+    "format": "{glyph}",
+    "format-alt": "{glyph} {count}",
+    "glyph": "󰊴",
+    "hide-not-running": true,
+    "use-icon": false,
+    "icon-spacing": 4,
+    "tooltip": true,
+    "tooltip-format": "GameMode активен · клиентов: {count}",
   },
 
   "cpu": {
